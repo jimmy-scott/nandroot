@@ -1,0 +1,87 @@
+## About the package
+
+This package creates an Android update for a Samsung Galaxy Gio S5660
+running Android 2.3.3. It can also run on any other phone running 2.3.3
+that has a rfs filesystem on /system and is located on an MTD partition.
+
+However, this README and the Makefile should contain enough information
+to make an update for your own phone. Linux experience and knowledge of
+the C programming language is assumed. So don't use this if you don't
+know what you're doing.
+
+This update deploys a 'su' binary like found on the Android emulator
+image. This 'su' binary allows you to run root commands, but only if you
+are the 'shell' user. You can become the 'shell' user by connecting via
+the Android Debug Bridge (adb) from the Android SDK.
+
+There are two ways to use the 'su' binary:
+	$ su
+	$ su <uid> <command>
+
+The update can be installed by booting into recovery mode.
+Make sure you have enough free space on /system to deploy 'su'.
+
+The Samsung Galaxy Gio S5660 can be booted in recovery mode by holding
+down the home button while the device is powered off. You can then
+navigate using the volume up and volume down buttons, and confirm with
+the home button. Go to 'apply update from sdcard', and then select the
+update file that you just created. Note that the update file must be
+located on the root of the SD card.
+
+All files are open source and found in the android tree.
+
+------------------------------------------------------------------------
+
+## About what you need
+
+You need to have following stuff installed:
+	* android SDK - for zipalign
+	* jdk6 (not jdk7) - for keytool + jarsigner
+
+You can then the create the update file like this:
+	* make SDKDIR=<path-to-android-sdk>
+
+It will ask you to create a key to sign the package.
+The 'out/update-final.zip' is the final outcome.
+
+If you don't want to download the android SDK, you can try removing the
+zipalign and SDK check from the Makefile. I don't think it is mandatory
+to align the zip, but it is a recommended optimization.
+
+------------------------------------------------------------------------
+
+## About the files
+
+You can build the binaries yourself, or grab them from an emulator.
+The Included binaries can be found on an android 2.3.3 system.img.
+
+I created my own build of the binaries, but it produced the same
+binaries as found on the 2.3.3 system.img from the Android SDK.
+You can verify the checksums, the files are exactly the same.
+
+I used this tag: android-2.3.3_r1
+And this lunch target: full-eng
+
+The sources for these files can be found in the android tree:
+    * bootable/recovery/updater/
+    * system/extras/su/
+
+The updater-script is written in the edify language.
+
+The source code for the edify functions can be found here:
+    * bootable/recovery/updater/install.c
+    * bootable/recovery/edify/expr.c
+
+If you want to verify/fetch the files from a 2.3.3 image,
+you can boot an AVD, then fetch them using the debug bridge:
+    $ adb pull /system/bin/updater
+    $ adb pull /system/xbin/su
+
+An AVD is an Android Virtual Device, which can be booted using the AVD
+manager from the Android SDK (for Eclipse).
+
+------------------------------------------------------------------------
+
+Have fun -- I am not responsible if you brick your phone!
+If you brick it, I will be happy to accept it as a donation :-)
+
